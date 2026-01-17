@@ -1,0 +1,29 @@
+"""
+Collect images from webcam for face detection dataset.
+Press Ctrl+C to stop early.
+"""
+
+import os
+import time
+import uuid
+import cv2
+
+IMAGES_PATH = os.path.join("data", "images")
+os.makedirs(IMAGES_PATH, exist_ok=True)
+
+NUM_IMAGES = 30
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+for i in range(NUM_IMAGES):
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    img_name = os.path.join(IMAGES_PATH, f"{uuid.uuid1()}.jpg")
+    cv2.imwrite(img_name, frame)
+
+    print(f"[INFO] Collected image {i+1}/{NUM_IMAGES}")
+    time.sleep(0.5)
+
+cap.release()
+cv2.destroyAllWindows()
