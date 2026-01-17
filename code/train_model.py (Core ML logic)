@@ -1,0 +1,23 @@
+"""
+Train face detector using:
+- VGG16 backbone
+- Binary classification head
+- Bounding box regression head
+"""
+
+import tensorflow as tf
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras.layers import Dense, GlobalMaxPooling2D, Input
+from tensorflow.keras.models import Model
+
+'''build_model() → your dual-head network
+
+Facetracker(Model) → custom training loop
+
+Mask regression loss when class = 0
+
+Train with callbacks
+
+Save functional model only:'''
+
+model.model.save("models/facetracker_functional.keras")
