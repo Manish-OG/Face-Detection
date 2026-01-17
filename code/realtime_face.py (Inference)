@@ -1,0 +1,40 @@
+"""
+Real-time face detection using trained model.
+Press Q or ESC to exit.
+"""
+
+import cv2
+import numpy as np
+import tensorflow as tf
+
+model = tf.keras.models.load_model(
+    "models/facetracker_functional.keras",
+    compile=False
+)
+
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    frame = frame[50:500, 50:500]
+    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    resized = cv2.resize(rgb, (120, 120))
+    input_img = np.expand_dims(resized / 255.0, axis=0)
+
+    cls, bbox = model.predict(input_img, verbose=0)
+    prob = cls[0][0].item()
+
+    if prob > 0.5:
+        x1, y1 = (bbox[0][:2] * [450, 450]).astype(int)
+        x2, y2 = (bbox[0][2:] * [450, 450]).astype(int)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+    cv2.imshow("Face Detection", frame)
+    if cv2.waitKey(1) & 0xFF in [27, ord("q")]:
+        break
+
+cap.release()
+cv2.destroyAllWindows()
